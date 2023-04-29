@@ -38,12 +38,6 @@
     const nameInputElement = document.getElementById('text-input-name');
     const commentTextareaElement = document.getElementById('text-textarea-comment');
     
-    const date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth();
-    let year = date.getFullYear() % 100;
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
 
     const users = [
       {
@@ -62,9 +56,14 @@
       },
     ];
 
-    const commentDate = currentDate();
-
     function currentDate() {
+
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear() % 100;
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
     
     if (day < 10) day = "0" + day;
 
@@ -76,9 +75,9 @@
 
     if (minutes < 10) minutes = "0" + minutes;
 
-    let date = day + "." + month + "." + year + " " + hours + ":" + minutes;
+    let newDate = day + "." + month + "." + year + " " + hours + ":" + minutes;
 
-    return date;
+    return newDate;
 
     }
 
@@ -88,7 +87,9 @@
 
       for (const buttonLikeElement of buttonsLikeElements) {
 
-        buttonLikeElement.addEventListener("click", () => {
+        buttonLikeElement.addEventListener("click", (event) => {
+
+          event.stopPropagation();
 
           const index = buttonLikeElement.dataset.index;
 
@@ -105,16 +106,33 @@
           }
 
           renderComments();
-
+          
         })
       }
     }
 
+    const listCopyComment = () => {
+
+      const listCommentElements = document.querySelectorAll('.comment');
+
+      for (const oldComment of listCommentElements) {
+
+        oldComment.addEventListener("click", () => {
+
+          const index = oldComment.dataset.index;
+
+          commentTextareaElement.value = `> ${users[index].comment} \n ${users[index].name},`
+
+        })
+        
+      }
+    }
+   
     const renderComments = () => {
 
       const usersHtml = users.map((user, index) => {
 
-        return `<li class="comment">
+        return `<li class="comment" data-index="${index}">
           <div class="comment-header">
             <div>${user.name}</div>
             <div>${user.data}</div>
@@ -137,6 +155,7 @@
       listElement.innerHTML = usersHtml;
       
       initButtonsLikeListeners();
+      listCopyComment();
     }
 
     renderComments();
@@ -170,9 +189,9 @@
       }
 
       users.push({
-        name: nameInputElement.value,
-        data: commentDate,
-        comment: commentTextareaElement.value,
+        name: nameInputElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
+        data: currentDate(),
+        comment: commentTextareaElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
         likes: 0,
         classLike: "like-button",
       })
@@ -182,6 +201,6 @@
         nameInputElement.value = "";
         commentTextareaElement.value = "";
     })
-    
+   
   </script>
 </html>
