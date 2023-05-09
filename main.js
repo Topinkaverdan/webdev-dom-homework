@@ -8,7 +8,7 @@ const commentLoaderElement = document.getElementById('comment-loader');
 
 let users = [];
 
-import fetchGet from "./api.js";
+import { fetchGet, fetchPost } from "./api.js";
 
 const fetchPromise = () => {
   
@@ -210,73 +210,62 @@ buttonElement.addEventListener('click', () => {
 
   }
 
-  fetch("https://webdev-hw-api.vercel.app/api/v1/danilova-veronika/comments", {
+  fetchPost()
+  
+  .then((response) => {
 
-    method: "POST",
-    body: JSON.stringify({
+    if (response.status === 400) {
 
-      name: nameInputElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-      text: commentTextareaElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-      date: currentDate(new Date()),
-      likes: 0,
-      classLike: "like-button",
-      forceError: true,
+    throw new Error('Ошибка ввода');
 
-    })
+    };
 
-    })
-    .then((response) => {
+    if (response.status === 500) {
 
-     if (response.status === 400) {
+    throw new Error('Сервер упал');
 
-      throw new Error('Ошибка ввода');
+    };
 
-     };
+    return response.json();
 
-     if (response.status === 500) {
-
-      throw new Error('Сервер упал');
-
-     };
-
-     return response.json();
-
-    })
-    .then (() => {
+  })
+  .then (() => {
       
-      fetchPromise();
+    fetchPromise();
 
-    })
-    .catch ((error) => {
+  })
+  .catch ((error) => {
 
-      if (error.message === 'Ошибка ввода') {
+    if (error.message === 'Ошибка ввода') {
 
-        alert('Имя пользователя и текст комментария должны содержать не менее трех символов');
-        console.warn(error);
+      alert('Имя пользователя и текст комментария должны содержать не менее трех символов');
+      console.warn(error);
 
-        nameInputElement.classList.add("error");
-        commentTextareaElement.classList.add("error");
+      nameInputElement.classList.add("error");
+      commentTextareaElement.classList.add("error");
 
-      } else if (error.message === 'Сервер упал') {
+    } else if (error.message === 'Сервер упал') {
 
-        alert('Сервер сломался, попробуйте позже.');
-        console.warn(error);
+      alert('Сервер сломался, попробуйте позже.');
+      console.warn(error);
         
-      } else {
+    } else {
 
-        alert('Кажется, у вас сломался интернет, попробуйте позже');
+      alert('Кажется, у вас сломался интернет, попробуйте позже');
 
-      }
+    };
 
-      addFormElement.style.display = "flex";
-      commentLoaderElement.innerHTML = "";
+    addFormElement.style.display = "flex";
+    commentLoaderElement.innerHTML = "";
 
-      nameInputElement.value = textName;
-      commentTextareaElement.value = commentTextTextarea;
+    nameInputElement.value = textName;
+    commentTextareaElement.value = commentTextTextarea;
 
-    });
+  });
 
 nameInputElement.value = "";
 commentTextareaElement.value = "";
 
-})
+});
+
+export {nameInputElement, commentTextareaElement, currentDate};
