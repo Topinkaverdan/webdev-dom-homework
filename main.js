@@ -1,14 +1,15 @@
 const listElement = document.getElementById('list-comments');
 const buttonElement = document.getElementById('add-button');
-const nameInputElement = document.getElementById('text-input-name');
-const commentTextareaElement = document.getElementById('text-textarea-comment');
+export const nameInputElement = document.getElementById('text-input-name');
+export const commentTextareaElement = document.getElementById('text-textarea-comment');
 const textLoaderElement = document.getElementById('get-loader');
 const addFormElement = document.getElementById("add-form-comment");
 const commentLoaderElement = document.getElementById('comment-loader');    
 
-let users = [];
+export let users = [];
 
 import { fetchGet, fetchPost } from "./api.js";
+import renderComments from "./renderComments.js";
 
 const fetchPromise = () => {
   
@@ -47,7 +48,7 @@ const fetchPromise = () => {
 
     addFormElement.style.display = "flex";
     
-    renderComments();
+    renderComments(listElement, users, initButtonsLikeListeners, listCopyComment);
 
     })
     .catch((error) => {
@@ -71,7 +72,7 @@ fetchPromise();
 
 
 
-function currentDate(relevantDate) {
+export function currentDate(relevantDate) {
 
 const date = relevantDate;
 let day = date.getDate();
@@ -120,7 +121,7 @@ const initButtonsLikeListeners = () => {
         
       }
 
-      renderComments();
+      renderComments(listElement, users, initButtonsLikeListeners, listCopyComment);
       
     })
   }
@@ -143,37 +144,7 @@ const listCopyComment = () => {
   }
 }
 
-const renderComments = () => {
-
-  const usersHtml = users.map((user, index) => {
-
-    return `<li class="comment" data-index="${index}">
-      <div class="comment-header">
-        <div>${user.name}</div>
-        <div>${user.date}</div>
-      </div>
-      <div class="comment-body">
-        <div class="comment-text">
-          ${user.comment}
-        </div>
-      </div>
-      <div class="comment-footer">
-        <div class="likes">
-          <span class="likes-counter">${user.likes}</span>
-          <button id="button-user-like" class="${user.classLike}" data-index="${index}"></button>
-        </div>
-      </div>
-    </li>`;
-  })
-  .join("");
-
-  listElement.innerHTML = usersHtml;
-  
-  initButtonsLikeListeners();
-  listCopyComment();
-}
-
-renderComments();
+renderComments(listElement, users, initButtonsLikeListeners, listCopyComment);
 
 
 buttonElement.addEventListener('click', () => {
@@ -268,4 +239,3 @@ commentTextareaElement.value = "";
 
 });
 
-export {nameInputElement, commentTextareaElement, currentDate};
