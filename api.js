@@ -1,4 +1,5 @@
-import {nameInputElement, commentTextareaElement, currentDate} from "./main.js"
+import { nameInputElement, commentTextareaElement } from "./main.js"
+import { currentDate } from "./data.js";
 
 const fetchGet = () => {
 
@@ -6,9 +7,19 @@ const fetchGet = () => {
       
         method: "GET",
       
+        })
+        .then((response) => {
+
+          if (response.status === 500) {
+            
+            throw new Error('Сервер упал');
+      
+          }
+      
+         return response.json();
+      
         });
     
-
 }
 
 const fetchPost = () => {
@@ -27,6 +38,24 @@ const fetchPost = () => {
 
     })
 
+    })
+
+    .then((response) => {
+
+      if (response.status === 400) {
+  
+      throw new Error('Ошибка ввода');
+  
+      };
+  
+      if (response.status === 500) {
+  
+      throw new Error('Сервер упал');
+  
+      };
+  
+      return response.json();
+  
     })
 
 }
