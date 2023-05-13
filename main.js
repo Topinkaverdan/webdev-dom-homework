@@ -2,7 +2,7 @@ const listElement = document.getElementById('list-comments');
 const buttonElement = document.getElementById('add-button');
 export const nameInputElement = document.getElementById('text-input-name');
 export const commentTextareaElement = document.getElementById('text-textarea-comment');
-const textLoaderElement = document.getElementById('get-loader');
+// const textLoaderElement = document.getElementById('get-loader');
 const addFormElement = document.getElementById("add-form-comment");
 const commentLoaderElement = document.getElementById('comment-loader');    
 
@@ -18,7 +18,6 @@ const fetchPromise = () => {
 
   .then((responseData) => {
 
-    textLoaderElement.innerHTML = '';
     users = responseData.comments.map((comment) => {
 
       return {
@@ -33,14 +32,21 @@ const fetchPromise = () => {
 
     });
 
-    commentLoaderElement.innerHTML = "";
+    // commentLoaderElement.innerHTML = "";
 
-    addFormElement.style.display = "flex";
+    // addFormElement.style.display = "flex";
     
-    renderComments(listElement, users, initButtonsLikeListeners, listCopyComment);
+    renderComments(users, initButtonsLikeListeners, listCopyComment);
+
+    const textLoaderElement = document.getElementById('get-loader');
+    
+    textLoaderElement.innerHTML = '';
+
+    //  textLoaderElement.innerHTML = '';
 
     })
     .catch((error) => {
+
       if (error.message === 'Сервер упал') {
 
         alert('Сервер сломался, попробуйте позже.');
@@ -84,7 +90,7 @@ const initButtonsLikeListeners = () => {
         
       }
 
-      renderComments(listElement, users, initButtonsLikeListeners, listCopyComment);
+      renderComments(users, initButtonsLikeListeners, listCopyComment);
       
     })
   }
@@ -107,81 +113,81 @@ const listCopyComment = () => {
   }
 }
 
-renderComments(listElement, users, initButtonsLikeListeners, listCopyComment);
+renderComments(users, initButtonsLikeListeners, listCopyComment);
 
 
-buttonElement.addEventListener('click', () => {
+// buttonElement.addEventListener('click', () => {
 
-  const textName = nameInputElement.value;
-  const commentTextTextarea = commentTextareaElement.value;
+//   const textName = nameInputElement.value;
+//   const commentTextTextarea = commentTextareaElement.value;
 
-  commentLoaderElement.innerHTML = "Комментарий добавляется..."
+//   commentLoaderElement.innerHTML = "Комментарий добавляется..."
   
-  addFormElement.style.display = "none";
+//   addFormElement.style.display = "none";
 
-  nameInputElement.classList.remove("error");
-  commentTextareaElement.classList.remove("error");
+//   nameInputElement.classList.remove("error");
+//   commentTextareaElement.classList.remove("error");
 
-  if (nameInputElement.value === "" && commentTextareaElement.value === "") {
+//   if (nameInputElement.value === "" && commentTextareaElement.value === "") {
 
-    nameInputElement.classList.add("error");
-    commentTextareaElement.classList.add("error");
-    return;
+//     nameInputElement.classList.add("error");
+//     commentTextareaElement.classList.add("error");
+//     return;
 
-  }
+//   }
 
-  if (nameInputElement.value === "") {
+//   if (nameInputElement.value === "") {
 
-    nameInputElement.classList.add("error");
-    return;
+//     nameInputElement.classList.add("error");
+//     return;
 
-  }
+//   }
 
-  if (commentTextareaElement.value === "") {
+//   if (commentTextareaElement.value === "") {
     
-    commentTextareaElement.classList.add("error");
-    return;
+//     commentTextareaElement.classList.add("error");
+//     return;
 
-  }
+//   }
 
-  fetchPost()
+//   fetchPost()
 
-  .then (() => {
+//   .then (() => {
       
-    fetchPromise();
+//     fetchPromise();
 
-  })
-  .catch ((error) => {
+//   })
+//   .catch ((error) => {
 
-    if (error.message === 'Ошибка ввода') {
+//     if (error.message === 'Ошибка ввода') {
 
-      alert('Имя пользователя и текст комментария должны содержать не менее трех символов');
-      console.warn(error);
+//       alert('Имя пользователя и текст комментария должны содержать не менее трех символов');
+//       console.warn(error);
 
-      nameInputElement.classList.add("error");
-      commentTextareaElement.classList.add("error");
+//       nameInputElement.classList.add("error");
+//       commentTextareaElement.classList.add("error");
 
-    } else if (error.message === 'Сервер упал') {
+//     } else if (error.message === 'Сервер упал') {
 
-      alert('Сервер сломался, попробуйте позже.');
-      console.warn(error);
+//       alert('Сервер сломался, попробуйте позже.');
+//       console.warn(error);
         
-    } else {
+//     } else {
 
-      alert('Кажется, у вас сломался интернет, попробуйте позже');
+//       alert('Кажется, у вас сломался интернет, попробуйте позже');
 
-    };
+//     };
 
-    addFormElement.style.display = "flex";
-    commentLoaderElement.innerHTML = "";
+//     addFormElement.style.display = "flex";
+//     commentLoaderElement.innerHTML = "";
 
-    nameInputElement.value = textName;
-    commentTextareaElement.value = commentTextTextarea;
+//     nameInputElement.value = textName;
+//     commentTextareaElement.value = commentTextTextarea;
 
-  });
+//   });
 
-nameInputElement.value = "";
-commentTextareaElement.value = "";
+// nameInputElement.value = "";
+// commentTextareaElement.value = "";
 
-});
+// });
 
