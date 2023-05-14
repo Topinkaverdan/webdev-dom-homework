@@ -1,9 +1,10 @@
-import { nameInputElement, commentTextareaElement } from "./main.js"
 import { currentDate } from "./data.js";
+
+const host = "https://webdev-hw-api.vercel.app/api/v2/danilova-veronika/comments"
 
 const fetchGet = () => {
 
-    return fetch("https://webdev-hw-api.vercel.app/api/v1/danilova-veronika/comments", {
+    return fetch(host, {
       
         method: "GET",
       
@@ -20,11 +21,11 @@ const fetchGet = () => {
       
         });
     
-}
+};
 
-const fetchPost = () => {
+const fetchPost = ({nameInputElement, commentTextareaElement, token}) => {
 
-    return fetch("https://webdev-hw-api.vercel.app/api/v1/danilova-veronika/comments", {
+    return fetch(host, {
 
     method: "POST",
     body: JSON.stringify({
@@ -36,7 +37,12 @@ const fetchPost = () => {
       classLike: "like-button",
       forceError: true,
 
-    })
+    }),
+    headers: {
+
+      Authorization: token,
+      
+    },
 
     })
 
@@ -58,6 +64,61 @@ const fetchPost = () => {
   
     })
 
+};
+
+const fetchLogin = (login, password) => {
+
+  return fetch("https://webdev-hw-api.vercel.app/api/user/login", {
+    
+    method: "POST",
+    body: JSON.stringify({
+
+      login,
+      password,
+    
+   }),
+
+  })
+  .then((response) => {
+
+  if (response.status === 400) {
+
+  throw new Error("Неверный логин или пароль");
+
+  }
+
+  return response.json();
+
+  });
+
+};
+
+const fetchRegister = (login, password, name) => {
+
+  return fetch("https://webdev-hw-api.vercel.app/api/user", {
+    
+    method: "POST",
+    body: JSON.stringify({
+
+      login,
+      password,
+      name,
+    
+   }),
+
+  })
+  .then((response) => {
+
+  if (response.status === 400) {
+
+  throw new Error("Такой пользователь уже существует");
+
+  }
+
+  return response.json();
+
+  });
+
 }
 
-export { fetchGet, fetchPost };
+export { fetchGet, fetchPost, fetchLogin, fetchRegister };

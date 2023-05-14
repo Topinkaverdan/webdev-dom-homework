@@ -1,48 +1,38 @@
-const listElement = document.getElementById('list-comments');
-const buttonElement = document.getElementById('add-button');
 export const nameInputElement = document.getElementById('text-input-name');
 export const commentTextareaElement = document.getElementById('text-textarea-comment');
-// const textLoaderElement = document.getElementById('get-loader');
-const addFormElement = document.getElementById("add-form-comment");
-const commentLoaderElement = document.getElementById('comment-loader');    
+
 
 export let users = [];
 
-import { fetchGet, fetchPost } from "./api.js";
-import renderComments from "./renderComments.js";
+import { fetchGet } from "./api.js";
+import renderComments from "./renders.js";
 import { currentDate } from "./data.js";
 
-const fetchPromise = () => {
-  
+export const fetchPromise = (render) => {
+
   fetchGet()
 
-  .then((responseData) => {
+    .then((responseData) => {
 
-    users = responseData.comments.map((comment) => {
+      users = responseData.comments.map((comment) => {
 
-      return {
+        return {
 
-        name: comment.author.name,
-        date: currentDate(new Date(comment.date)),
-        comment: comment.text,
-        likes: comment.likes,
-        classLike: "like-button",
+          name: comment.author.name,
+          date: currentDate(new Date(comment.date)),
+          comment: comment.text,
+          likes: comment.likes,
+          classLike: "like-button",
 
-      }
+        }
 
-    });
+      });
 
-    // commentLoaderElement.innerHTML = "";
+      render(users, initButtonsLikeListeners, listCopyComment);
 
-    // addFormElement.style.display = "flex";
-    
-    renderComments(users, initButtonsLikeListeners, listCopyComment);
+      const textLoaderElement = document.getElementById('get-loader');
 
-    const textLoaderElement = document.getElementById('get-loader');
-    
-    textLoaderElement.innerHTML = '';
-
-    //  textLoaderElement.innerHTML = '';
+      textLoaderElement.innerHTML = '';
 
     })
     .catch((error) => {
@@ -50,23 +40,23 @@ const fetchPromise = () => {
       if (error.message === 'Сервер упал') {
 
         alert('Сервер сломался, попробуйте позже.');
-        
+
       } else {
 
         alert('Кажется, у вас сломался интернет, попробуйте позже');
-        
+
       }
-      
+
     });
 
-} 
+}
 
 
 
-fetchPromise();
+fetchPromise(renderComments);
 
 
-const initButtonsLikeListeners = () => {
+const initButtonsLikeListeners = (render) => {
 
   const buttonsLikeElements = document.querySelectorAll('#button-user-like');
 
@@ -87,16 +77,20 @@ const initButtonsLikeListeners = () => {
 
         users[index].classLike = "like-button";
         users[index].likes -= 1;
-        
+
       }
 
-      renderComments(users, initButtonsLikeListeners, listCopyComment);
-      
+      render(users, initButtonsLikeListeners, listCopyComment);
+
+      const textLoaderElement = document.getElementById('get-loader');
+
+      textLoaderElement.innerHTML = '';
+
     })
   }
 }
 
-const listCopyComment = () => {
+const listCopyComment = (input) => {
 
   const listCommentElements = document.querySelectorAll('.comment');
 
@@ -106,88 +100,11 @@ const listCopyComment = () => {
 
       const index = oldComment.dataset.index;
 
-      commentTextareaElement.value = `> ${users[index].comment} \n ${users[index].name},`
+      input.value = `> ${users[index].comment} \n ${users[index].name},`
 
     })
-    
+
   }
 }
 
 renderComments(users, initButtonsLikeListeners, listCopyComment);
-
-
-// buttonElement.addEventListener('click', () => {
-
-//   const textName = nameInputElement.value;
-//   const commentTextTextarea = commentTextareaElement.value;
-
-//   commentLoaderElement.innerHTML = "Комментарий добавляется..."
-  
-//   addFormElement.style.display = "none";
-
-//   nameInputElement.classList.remove("error");
-//   commentTextareaElement.classList.remove("error");
-
-//   if (nameInputElement.value === "" && commentTextareaElement.value === "") {
-
-//     nameInputElement.classList.add("error");
-//     commentTextareaElement.classList.add("error");
-//     return;
-
-//   }
-
-//   if (nameInputElement.value === "") {
-
-//     nameInputElement.classList.add("error");
-//     return;
-
-//   }
-
-//   if (commentTextareaElement.value === "") {
-    
-//     commentTextareaElement.classList.add("error");
-//     return;
-
-//   }
-
-//   fetchPost()
-
-//   .then (() => {
-      
-//     fetchPromise();
-
-//   })
-//   .catch ((error) => {
-
-//     if (error.message === 'Ошибка ввода') {
-
-//       alert('Имя пользователя и текст комментария должны содержать не менее трех символов');
-//       console.warn(error);
-
-//       nameInputElement.classList.add("error");
-//       commentTextareaElement.classList.add("error");
-
-//     } else if (error.message === 'Сервер упал') {
-
-//       alert('Сервер сломался, попробуйте позже.');
-//       console.warn(error);
-        
-//     } else {
-
-//       alert('Кажется, у вас сломался интернет, попробуйте позже');
-
-//     };
-
-//     addFormElement.style.display = "flex";
-//     commentLoaderElement.innerHTML = "";
-
-//     nameInputElement.value = textName;
-//     commentTextareaElement.value = commentTextTextarea;
-
-//   });
-
-// nameInputElement.value = "";
-// commentTextareaElement.value = "";
-
-// });
-
