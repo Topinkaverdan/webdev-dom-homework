@@ -6,7 +6,8 @@ export let users = [];
 
 import { fetchGet } from "./api.js";
 import renderComments from "./renders.js";
-import { currentDate } from "./data.js";
+// import { currentDate } from "./data.js";
+import format from "date-fns/format";
 
 export const fetchPromise = (render) => {
 
@@ -19,7 +20,7 @@ export const fetchPromise = (render) => {
         return {
 
           name: comment.author.name,
-          date: currentDate(new Date(comment.date)),
+          date: format(new Date(comment.date), "MM-dd-yyyy hh.mm.ss"),
           comment: comment.text,
           likes: comment.likes,
           classLike: "like-button",
