@@ -1,4 +1,5 @@
-import { currentDate } from "./data.js";
+// import { currentDate } from "./data.js";
+import format from "date-fns/format";
 
 const host = "https://webdev-hw-api.vercel.app/api/v2/danilova-veronika/comments"
 
@@ -32,7 +33,7 @@ const fetchPost = ({nameInputElement, commentTextareaElement, token}) => {
 
       name: nameInputElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
       text: commentTextareaElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-      date: currentDate(new Date()),
+      date: format(new Date(), "MM-dd-yyyy hh.mm.ss"),
       likes: 0,
       classLike: "like-button",
       forceError: true,
